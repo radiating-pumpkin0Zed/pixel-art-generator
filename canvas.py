@@ -1,4 +1,5 @@
 import pygame
+import random
 import sys
 
 pygame.init()
@@ -70,12 +71,33 @@ def move_cursor():
         cursor_x = 5
         cursor_y = 5
 
+def generate_creature(word):
+    global cursor_x, cursor_y
+    size = len(word)
+
+    #draw body
+    for i in range(size + 3):
+        for j in range(size + 3):
+            grid[cursor_x+i][cursor_y+j] = (255,255,255)
+
+    #draw eyes
+    grid[cursor_x+1][cursor_y+1] = (0,0,0)
+    grid[cursor_x+size][cursor_y+1] = (0,0,0)
+
+    #random legs
+    if random.random() > 0.5:
+        grid[cursor_x+1][cursor_y+size+2] = (255,255,255)
+        grid[cursor_x+size][cursor_y+size+2] = (255,255,255)
+    move_cursor()
+
 rules = {
     "h": draw_h,
     "e": draw_e,
     "l": draw_l,
     "o": draw_o
 }
+
+typed_text = ""
 
 while True:
     
@@ -97,6 +119,9 @@ while True:
         if event.type == pygame.KEYDOWN:
 
             key = event.unicode
+
+            if key.isalpha():
+                typed_text += key
             print(key)
 
             if event.key == pygame.K_BACKSPACE:
@@ -113,6 +138,9 @@ while True:
                     for j in range(5):
                         grid[cursor_x+i][cursor_y+j] = (0,0,0)
 
+            if event.key == pygame.K_SPACE:
+                generate_creature(typed_text)
+                typed_text = ""
 
             if key in rules:
                 rules[key]()
