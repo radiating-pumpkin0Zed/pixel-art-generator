@@ -152,6 +152,9 @@ while True:
                 generate_creature(typed_text)
                 typed_text = ""
 
+            if event.key == pygame.K_s:
+                pygame.image.save(screen, "pixel_art.png")
+
             if key in rules:
                 #rules[key]()
                 move_cursor()
