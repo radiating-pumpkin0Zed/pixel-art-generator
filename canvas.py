@@ -33,30 +33,30 @@ def draw_h():
 
     for i in range(5):
         for j in range(5):
-            grid[cursor_x+i][cursor_y+j] = (255,255,255)
+            grid[cursor_x+i][cursor_y+j] = color
 
 def draw_e():
     global cursor_x, cursor_y
 
-    grid[cursor_x+1][cursor_y+1] = (255,255,255)
-    grid[cursor_x+3][cursor_y+1] = (255,255,255)
+    grid[cursor_x+1][cursor_y+1] = color
+    grid[cursor_x+3][cursor_y+1] = color
 
 def draw_l():
     global cursor_x, cursor_y
 
     for j in range(5):
-        grid[cursor_x+2][cursor_y+j] = (255,255,255)
+        grid[cursor_x+2][cursor_y+j] = color
 
 def draw_o():
     global cursor_x, cursor_y
 
     for i in range(5):
-        grid[cursor_x+i][cursor_y] = (255,255,255)
-        grid[cursor_x+i][cursor_y+4] = (255,255,255)
+        grid[cursor_x+i][cursor_y] = color
+        grid[cursor_x+i][cursor_y+4] = color
 
     for j in range(5):
-        grid[cursor_x][cursor_y+j] = (255,255,255)
-        grid[cursor_x+4][cursor_y+j] = (255,255,255)
+        grid[cursor_x][cursor_y+j] = color
+        grid[cursor_x+4][cursor_y+j] = color
 
 def move_cursor():
     global cursor_x, cursor_y
@@ -73,21 +73,28 @@ def move_cursor():
 
 def generate_creature(word):
     global cursor_x, cursor_y
-    size = len(word)
+    size = max(3, len(word))
+
+    color_seed = sum(ord(c) for c in word)
+    r = (color_seed * 3) % 256
+    g = (color_seed * 7) % 256
+    b = (color_seed * 11) % 256
+
+    color = (r, g, b)
 
     #draw body
-    for i in range(size + 3):
-        for j in range(size + 3):
-            grid[cursor_x+i][cursor_y+j] = (255,255,255)
+    for i in range(size):
+        for j in range(size):
+            grid[cursor_x+i][cursor_y+j] = color
 
     #draw eyes
     grid[cursor_x+1][cursor_y+1] = (0,0,0)
-    grid[cursor_x+size][cursor_y+1] = (0,0,0)
+    grid[cursor_x+size-2][cursor_y+1] = (0,0,0)
 
     #random legs
     if random.random() > 0.5:
-        grid[cursor_x+1][cursor_y+size+2] = (255,255,255)
-        grid[cursor_x+size][cursor_y+size+2] = (255,255,255)
+        grid[cursor_x+1][cursor_y+size] = color
+        grid[cursor_x+size-2][cursor_y+size] = color
     move_cursor()
 
     if cursor_x + 10 >= GRID_SIZE:
@@ -113,7 +120,7 @@ while True:
         grid_y = my // PIXEL_SIZE
         
         if 0 <= grid_x < GRID_SIZE and 0 <= grid_y < GRID_SIZE:
-            grid[grid_x][grid_y] = (255,255,255)
+            grid[grid_x][grid_y] = color
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -146,7 +153,7 @@ while True:
                 typed_text = ""
 
             if key in rules:
-                rules[key]()
+                #rules[key]()
                 move_cursor()
 
     screen.fill((30,30,30))
