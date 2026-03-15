@@ -25,6 +25,8 @@ grid[40][5] = (255,255,0)
 
 clock = pygame.time.Clock()
 
+creatures = []
+
 def area_is_free(x,y,size):
     for i in range(size):
         for j in range(size):
@@ -41,10 +43,10 @@ def generate_creature(word):
     size = max(3, len(word))
 
     for _ in range(50):
-        spawn_x = random.randint(0, GRID_SIZE-10)
-        spawn_y = random.randint(0, GRID_SIZE-10)
+        spawn_x = random.randint(0, GRID_SIZE- size - 2)
+        spawn_y = random.randint(0, GRID_SIZE- size - 2)
 
-        if area_is_free(spawn_x, spawn_y, 5):
+        if area_is_free(spawn_x, spawn_y, size):
             break
 
     color_seed = sum(ord(c) for c in word)
@@ -89,6 +91,15 @@ def generate_creature(word):
         grid[spawn_x+1][spawn_y+1] = (0,0,0)
         grid[spawn_x+size-2][spawn_y+1] = (0,0,0)
 
+    creatures.append({
+        "x": spawn_x,
+        "y": spawn_y,
+        "size": size,
+        "color": color,
+        "word": word,
+        "blink": 0
+    })
+
 typed_text = ""
 
 while True:
@@ -117,17 +128,17 @@ while True:
 
             if event.key == pygame.K_BACKSPACE:
                 
-                spawn_x -= 6
-                if spawn_x < 5:
-                    spawn_x = GRID_SIZE - 11
-                    spawn_y -= 6
-                
-                if spawn_y < 5:
-                    spawn_y = 5
+                if creatures:
+                    creature = creatures.pop()
 
-                for i in range(5):
-                    for j in range(5):
-                        grid[spawn_x+i][spawn_y+j] = (0,0,0)
+                    x = creature["x"]
+                    y = creature["y"]
+                    size = creature["size"]
+
+                    for i in range(size+2):
+                        for j in range(size+2):
+                            if 0 <= x+i < GRID_SIZE and 0 <= y+j < GRID_SIZE:
+                                grid[x+i][y+j] = (0,0,0)
 
             if event.key == pygame.K_SPACE:
                 generate_creature(typed_text)
@@ -137,6 +148,24 @@ while True:
                 pygame.image.save(screen, "pixel_art.png")
 
     screen.fill((30,30,30))
+
+    for creature in creatures:
+
+        x = creature["x"]
+        y = creature["y"]
+        size = creature["size"]
+
+        creature["blink"] += 1
+
+        if creature["blink"] > 120:
+            creature["blink"] = 0
+        
+        if creature["blink"] < 110:
+            grid[x+1][y+1] = (0,0,0)
+            grid[x+size-2][y+1] = (0,0,0)
+        else:
+            grid[x+1][y+1] = creature["color"]
+            grid[x+size-2][y+1] = creature["color"]
 
     for x in range(GRID_SIZE):
         for y in range(GRID_SIZE):
@@ -155,7 +184,6 @@ while True:
                     (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE),
                     1
             )
-
     
     pygame.display.update()
     clock.tick(60)
