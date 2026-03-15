@@ -150,16 +150,41 @@ while True:
     screen.fill((30,30,30))
 
     for creature in creatures:
-
+            
         x = creature["x"]
         y = creature["y"]
         size = creature["size"]
 
-        creature["blink"] += 1
+        #clear old position
+        for i in range(size+2):
+            for j in range(size+2):
+                if 0 <= x+i < GRID_SIZE and 0 <= y+j < GRID_SIZE:
+                    grid[x+i][y+j] = (0,0,0)
 
+        creature["blink"] += 1
         if creature["blink"] > 120:
             creature["blink"] = 0
-        
+
+        if random.random() < 0.02:
+            dx = random.choice([-1,0,1])
+            dy = random.choice([-1,0,1])
+   
+            new_x = creature["x"] + dx
+            new_y = creature["y"] + dy
+
+            if 0 <= new_x < GRID_SIZE - size and 0 <= new_y < GRID_SIZE - size:
+                creature["x"] = new_x
+                creature["y"] = new_y
+
+        x = creature["x"]
+        y = creature["y"]
+        size = creature["size"]
+        color = creature["color"]
+
+        for i in range(size):
+            for j in range(size):
+                grid[x+i][y+j] = color
+            
         if creature["blink"] < 110:
             grid[x+1][y+1] = (0,0,0)
             grid[x+size-2][y+1] = (0,0,0)
