@@ -11,7 +11,7 @@ GRID_SIZE = 64
 PIXEL_SIZE = WIDTH // GRID_SIZE
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Pixel Art Generator")
+pygame.display.set_caption("Pixel Ecosystem")
 
 #grid 
 grid = [[(0,0,0) for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
