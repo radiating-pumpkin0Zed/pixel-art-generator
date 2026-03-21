@@ -414,7 +414,13 @@ while True:
         to_remove.add(i)
         to_remove.add(j)
     
+    for idx in to_remove:
+        clear_creature(creatures[idx])
+        
     creatures = [c for idx, c in enumerate(creatures) if idx not in to_remove]
+    
+    for word in new_creatures:
+        generate_creature(word)
 
     for x in range(GRID_SIZE):
         for y in range(GRID_SIZE):
