@@ -86,7 +86,10 @@ def generate_creature(word, grid, creatures, GRID_SIZE, creature_area_is_free, d
         "word": word,
         "shape": shape,
         "has_legs": has_legs,
-        "blink": 0
+        "blink": 0,
+        "cooldown": 0,
+        "age": 0,
+        "max_age": random.randint(300, 600)
     }
 
     draw_creature(creature, grid, GRID_SIZE)

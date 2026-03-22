@@ -75,6 +75,9 @@ while True:
 
     for creature in creatures:
             
+        if creature["cooldown"] > 0:
+            creature["cooldown"] -= 1
+
         x = creature["x"]
         y = creature["y"]
         size = creature["size"]
@@ -85,6 +88,7 @@ while True:
         creature["blink"] += 1
         if creature["blink"] > 120:
             creature["blink"] = 0
+
 
         if random.random() < 0.02:
             dx = random.choice([-1,0,1])
@@ -126,10 +130,16 @@ while True:
     # Handle collisions
     to_remove = set()
     for i, j in collisions:
+
         if i in to_remove or j in to_remove:
             continue
+
         c1 = creatures[i]
         c2 = creatures[j]
+
+        if c1["cooldown"] > 0 or c2["cooldown"] > 0:
+            continue
+        
         new_word = c1["word"] + c2["word"]
 
         new_creatures.append(new_word)
@@ -142,7 +152,16 @@ while True:
     creatures = [c for idx, c in enumerate(creatures) if idx not in to_remove]
     
     for word in new_creatures:
-        generate_creature(word, grid, creatures, GRID_SIZE, creature_area_is_free, draw_creature)
+        generate_creature(
+            word,
+            grid,
+            creatures,
+            GRID_SIZE,
+            creature_area_is_free,
+            draw_creature
+        )
+
+        creatures[-1]["cooldown"] = 60
 
     for x in range(GRID_SIZE):
         for y in range(GRID_SIZE):
