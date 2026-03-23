@@ -74,7 +74,11 @@ while True:
     screen.fill((30,30,30))
 
     to_remove = set()
+
     for idx, creature in enumerate(creatures):
+
+        if "hunger" not in creature:
+            creature["hunger"] = 0
             
         if creature["cooldown"] > 0:
             creature["cooldown"] -= 1
@@ -83,6 +87,14 @@ while True:
         creature["age"] += 1
 
         if creature["age"] > creature["max_age"]:
+            clear_creature(creature, grid, GRID_SIZE)
+            to_remove.add(idx)
+            continue
+
+        if creature["is_predator"]:
+            creature["hunger"] += 1
+
+        if creature["is_predator"] and creature["hunger"] > 600:
             clear_creature(creature, grid, GRID_SIZE)
             to_remove.add(idx)
             continue
@@ -98,7 +110,8 @@ while True:
         if creature["blink"] > 120:
             creature["blink"] = 0
 
-        move_chance = 0.05 if creature["is_predator"] else 0.02
+        move_chance = 0.08 if creature["is_predator"] else 0.02
+        
         if random.random() < move_chance:
             dx = random.choice([-1,0,1])
             dy = random.choice([-1,0,1])
@@ -148,9 +161,11 @@ while True:
         #Predator logic
         if c1["is_predator"] and not c2["is_predator"]:
             to_remove.add(j)
+            c1["hunger"] = 0 #just ate
             continue
         if c2["is_predator"] and not c1["is_predator"]:
             to_remove.add(i)
+            c2["hunger"] = 0
             continue
 
         if c1["cooldown"] > 0 or c2["cooldown"] > 0:

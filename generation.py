@@ -90,7 +90,8 @@ def generate_creature(word, grid, creatures, GRID_SIZE, creature_area_is_free, d
         "cooldown": 0,
         "age": 0,
         "max_age": random.randint(1000, 2000),
-        "is_predator": random.random() < 0.08
+        "is_predator": random.random() < 0.08,
+        "hunger": -100
     }
 
     draw_creature(creature, grid, GRID_SIZE)
