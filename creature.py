@@ -27,8 +27,22 @@ def get_creature_pixels(x, y, size, shape, word, has_legs):
 
     for frame_x, frame_y in get_eye_frame_positions(x, y, size, word):
         pixels.append((frame_x, frame_y))
+    
+    outline_pixels = set()
+    shape_pixels = {(x+i, y+j) for i, j in shape}
+
+    for i, j in shape:
+        for dx,dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+            px = x+i+dx
+            py = y +j + dy
+            if (px, py) not in shape_pixels:
+                outline_pixels.add((px, py))
+                
+    pixels.extend(outline_pixels)
 
     return pixels
+
+
 
 def clear_creature(creature, grid, GRID_SIZE):
     for pixel_x, pixel_y in get_creature_pixels(
@@ -52,13 +66,28 @@ def draw_creature(creature, grid, GRID_SIZE):
 
     if creature["is_predator"]:
         color = (
-            min(color[0] + 60, 255),
-            color[1],
-            color[2]
+            min(color[0] + 80, 255),
+            max(color[1] - 40, 0),
+            max(color[2] - 40, 0)
         )
         
     draw_creature_shape(x, y, color, shape, grid, GRID_SIZE)
+    
+    #predator outline
+    if creature.get("is_predator"):
+        outline_pixels = set()
 
+        for i,j in shape:
+            for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+                px = x + i + dx
+                py = y + j + dy
+
+                if in_bounds(px,py,GRID_SIZE) and (px, py) not in [(x+i, y+j) for i,j in shape]:
+                    outline_pixels.add((px, py))
+        for px, py in outline_pixels:
+            if grid[px][py] == (0,0,0):
+                grid[px][py] = (255, 60, 60)
+ 
     if creature["has_legs"]:
         if in_bounds(x+1, y+size, GRID_SIZE):
             grid[x+1][y+size] = color
