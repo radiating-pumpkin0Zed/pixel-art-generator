@@ -9,11 +9,16 @@ def draw_menu(screen, WIDTH, MENU_WIDTH, HEIGHT, font, small_font, creatures, ty
 
     predator_count = sum(1 for c in creatures if c["is_predator"])
     prey_count = len(creatures) - predator_count
-    
+
     lines = []
+    
     if paused:
         lines.append("⏸ PAUSED")
         lines.append("") 
+    
+    if predator_count > prey_count and predator_count > 0:
+        lines.append("⚠ PREDATORS DOMINATING ⚠")
+        lines.append("")
 
     lines += [
         "=== CONTROLS ===",
@@ -36,26 +41,32 @@ def draw_menu(screen, WIDTH, MENU_WIDTH, HEIGHT, font, small_font, creatures, ty
         "m = extra legs",
         "o = bigger eyes",
         "",
-        f"Current text: [{typed_text}]"
+        lines.insert(10, f"Current text: [{typed_text}]")
     ]
 
     y = 52
     for line in lines:
+        if line is None:
+            continue
+
         color = (220, 220, 220)
 
         if "===" in line:
             color = (255, 180, 80)
-        elif "Predators" in line:
+        elif line.startswith("Predators"):
             color = (255, 80, 80)
-        elif "Prey" in line:
+        elif line.startswith("Prey"):
             color = (80, 200, 120)
+        elif "⚠" in line:
+            color = (255, 60, 60)
         elif "PAUSED" in line:
             color = (255, 220, 120)
         
         text = small_font.render(line, True, color)
         screen.blit(text, (WIDTH + 16, y))
-        
+
         if line == "":
             y += 12
+            continue
         else:
             y += 26
