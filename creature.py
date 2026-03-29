@@ -42,10 +42,8 @@ def get_creature_pixels(x, y, size, shape, word, has_legs):
 
     return pixels
 
-
-
 def clear_creature(creature, grid, GRID_SIZE):
-    for pixel_x, pixel_y in get_creature_pixels(
+    for pixel_x, pixel_y in get_creature_pixels (
         creature["x"],
         creature["y"],
         creature["size"],

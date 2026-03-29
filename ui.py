@@ -90,21 +90,32 @@ def draw_menu(screen, WIDTH, MENU_WIDTH, HEIGHT, font, small_font, creatures, ty
 
         if max_pop > 0:
 
-            for i in range(1, len(population_history)):
-                x1 = graph_x + (i-1) * (graph_width / len(population_history))
-                x2 = graph_x + i * (graph_width / len(population_history))
+            points_total = []
+            points_pred = []
+            points_prey = []
 
-                #total population
-                y1 = graph_y + graph_height - (population_history[i-1] / max_pop) * graph_height
-                y2 = graph_y + graph_height - (population_history[i] / max_pop) * graph_height
-                pygame.draw.line(screen, (100, 200, 255), (x1, y1), (x2, y2), 2)
+            step = graph_width / max(1, len(population_history) - 1)
+            
+            for i in range(len(population_history)):
 
-                #predators
-                y1 = graph_y + graph_height - (predator_history[i-1] / max_pop) * graph_height
-                y2 = graph_y + graph_height - (population_history[i] / max_pop) * graph_height
-                pygame.draw.line(screen, (255, 80, 80), (x1, y1), (x2, y2), 2)
+                x = int(graph_x + i * step)
 
-                #prey
-                y1 = graph_y + graph_height - (predator_history[i-1] / max_pop) * graph_height
-                y2 = graph_y + graph_height - (population_history[i] / max_pop) * graph_height
-                pygame.draw.line(screen, (80, 200, 120), (x1, y1), (x2, y2), 2)
+                y_total = graph_y + graph_height - (population_history[i] / max_pop) * graph_height
+                y_pred  = graph_y + graph_height - (predator_history[i] / max_pop) * graph_height
+                y_prey  = graph_y + graph_height - (prey_history[i] / max_pop) * graph_height
+
+                points_total.append((x, int(y_total)))
+                points_pred.append((x, int(y_pred)))
+                points_prey.append((x, int(y_prey)))
+
+                if len(points_total) > 1:
+                    pygame.draw.lines(screen, (100, 200, 255), False, points_total, 2)
+                    pygame.draw.lines(screen, (255, 80, 80), False, points_pred, 2)
+                    pygame.draw.lines(screen, (80, 200, 120), False, points_prey, 2)
+                
+                if len(points_prey) > 1:
+                    filled = points_prey + [(points_prey[-1][0], graph_y + graph_height),
+                                            (points_prey[0][0], graph_y + graph_height)]
+                    pygame.draw.polygon(screen, (50, 120, 80), filled)
+
+
