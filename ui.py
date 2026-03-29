@@ -79,7 +79,7 @@ def draw_menu(screen, WIDTH, MENU_WIDTH, HEIGHT, font, small_font, creatures, ty
     
     #GRAPH 
     graph_x = WIDTH + 16
-    graph_y = HEIGHT - 120
+    graph_y = y + 10
     graph_width = MENU_WIDTH - 32
     graph_height = 100
 

@@ -7,10 +7,10 @@ from ui import draw_menu
 
 pygame.init()
 
-WIDTH = 512
-HEIGHT = 512
+WIDTH = 640
+HEIGHT = 640
 GRID_SIZE = 64
-MENU_WIDTH = 220
+MENU_WIDTH = 260
 
 PIXEL_SIZE = WIDTH // GRID_SIZE
 

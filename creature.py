@@ -70,6 +70,14 @@ def draw_creature(creature, grid, GRID_SIZE):
             max(color[1] - 40, 0),
             max(color[2] - 40, 0)
         )
+
+    if creature.get("spawn_effect", 0) > 0:
+        import random
+        color = (
+            random.randint(150, 255), 
+            random.randint(0, 80),
+            random.randint(0, 80)
+        )
         
     draw_creature_shape(x, y, color, shape, grid, GRID_SIZE)
     
