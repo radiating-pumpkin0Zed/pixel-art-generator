@@ -32,6 +32,7 @@ grid[40][5] = (255,255,0)
 clock = pygame.time.Clock()
 
 creatures = []
+fruits = []
 typed_text = ""
 paused = False
 population_history = []
@@ -141,9 +142,33 @@ while True:
                 move_chance = base_move
             
             if random.random() < move_chance:
-                dx = random.choice([-1,0,1])
-                dy = random.choice([-1,0,1])
-    
+                dx, dy = 0, 0
+
+                for other in creatures:
+                    if other == creature:
+                        continue
+                        
+                    dist_x = other["x"] - creature["x"]
+                    dist_y = other["y"] - creature["y"]
+
+                    distance = abs(dist_x) + abs(dist_y)
+
+                    if distance < 8:
+
+                        if creature.get("is_predator") and not other.get("is_predator"):
+                            dx = 1 if dist_x > 0 else -1 if dist_x < 0 else 0
+                            dy = 1 if dist_y > 0 else -1 if dist_y < 0 else 0
+                            break
+
+                        if not creature.get("is_predator") and other.get("is_predator"):
+                            dx = -1 if dist_x > 0 else 1 if dist_x < 0 else 0
+                            dy = -1 if dist_y > 0 else 1 if dist_y < 0 else 0
+                            break
+
+                if dx == 0 and dy == 0:
+                    dx = random.choice([-1, 0, 1])
+                    dy = random.choice([-1, 0, 1])
+
                 new_x = creature["x"] + dx
                 new_y = creature["y"] + dy
 
