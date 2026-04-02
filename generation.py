@@ -79,6 +79,7 @@ def generate_creature(word, grid, creatures, GRID_SIZE, creature_area_is_free, d
     color = (r, g, b)
 
     is_predator = random.random() < 0.1
+    personality = random.choice(["aggressive", "lazy", "normal"])
 
     creature = {
         "x": spawn_x,
@@ -95,6 +96,7 @@ def generate_creature(word, grid, creatures, GRID_SIZE, creature_area_is_free, d
         "hunger": -100,
         "is_predator": is_predator,
         "spawn_effect": 10 if is_predator else 0,
+        "personality": personality
     }
 
     draw_creature(creature, grid, GRID_SIZE)

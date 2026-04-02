@@ -79,6 +79,9 @@ while True:
 
             if event.key == pygame.K_r and pygame.key.get_mods() & pygame.KMOD_CTRL:
                 creatures.clear()
+                population_history.clear()
+                predator_history.clear()
+                prey_history.clear()
                 grid = [[(0,0,0) for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
     screen.fill((30,30,30))
@@ -106,10 +109,10 @@ while True:
                 to_remove.add(idx)
                 continue
 
-            if creature["is_predator"]:
-                creature["hunger"] += 1
+            if creature.get("is_predator"):
+                creature["hunger"] += 0.5
 
-            if creature["is_predator"] and creature["hunger"] > 600:
+            if creature.get("is_predator") and creature["hunger"] > 600:
                 clear_creature(creature, grid, GRID_SIZE)
                 to_remove.add(idx)
                 continue
@@ -125,7 +128,17 @@ while True:
             if creature["blink"] > 120:
                 creature["blink"] = 0
 
-            move_chance = 0.08 if creature.get("is_predator") else 0.02
+            if creature.get("is_predator"):
+                base_move = 0.06
+            else:
+                base_move = 0.02
+            
+            if creature.get("personality") == "aggressive":
+                move_chance = base_move + 0.04
+            elif creature.get("personality") == "lazy":
+                move_chance = base_move - 0.01
+            else:
+                move_chance = base_move
             
             if random.random() < move_chance:
                 dx = random.choice([-1,0,1])
@@ -184,7 +197,7 @@ while True:
             continue
 
         if c1["is_predator"] and c2["is_predator"]:
-            if random.random() < 0.3:
+            if random.random() < 0.5:
                 to_remove.add(i)
             else:
                 to_remove.add(j)

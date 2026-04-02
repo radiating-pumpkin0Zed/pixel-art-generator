@@ -62,6 +62,11 @@ def draw_creature(creature, grid, GRID_SIZE):
     word = creature["word"]
     color = creature["color"]
 
+    if creature.get("personality") == "aggressive":
+        color = (min(color[0]+40,255)), color[1], color[2]
+    elif creature.get("personality") == "lazy":
+        color = (color[0], min(color[1]+40, 255), color[2])
+
     if creature["is_predator"]:
         color = (
             min(color[0] + 80, 255),
