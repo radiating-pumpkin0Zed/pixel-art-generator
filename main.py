@@ -32,12 +32,12 @@ grid[40][5] = (255,255,0)
 clock = pygame.time.Clock()
 
 creatures = []
-fruits = []
 typed_text = ""
 paused = False
 population_history = []
 predator_history = []
 prey_history = []
+fruits = []
 
 while True:
     
@@ -175,6 +175,19 @@ while True:
                 if 0 <= new_x < GRID_SIZE - creature["size"] and 0 <= new_y < GRID_SIZE - creature["size"]:
                     creature["x"] = new_x
                     creature["y"] = new_y
+                
+                for fx, fy in fruits:
+                    if abs(fx - creature["x"]) <= 1 and abs(fy - creature["y"]) <= 1:
+
+                        fruits.remove((fx, fy))
+
+                        # apply effect
+                        if creature.get("is_predator"):
+                            creature["hunger"] = max(0, creature["hunger"] - 200)
+                        else:
+                            creature["max_age"] += 300
+
+                        break
 
             draw_creature(creature, grid, GRID_SIZE)
 
@@ -242,6 +255,11 @@ while True:
 
     creatures = [c for idx, c in enumerate(creatures) if idx not in to_remove]
 
+    if random.random() < 0.002 and len(fruits) < 5:
+        fx = random.randint(0, GRID_SIZE - 1)
+        fy = random.randint(0, GRID_SIZE - 1)
+        fruits.append((fx, fy))
+
     predator_count = sum(1 for c in creatures if c.get("is_predator"))
     prey_count = len(creatures) - predator_count
 
@@ -270,6 +288,16 @@ while True:
         for y in range(GRID_SIZE):
 
             color = grid[x][y]
+
+            if (x, y) in fruits:
+                color = (255, 0, 255)
+
+                pygame.draw.rect(
+                    screen,
+                    (255,255,255),
+                    (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE),
+                    1
+                )
 
             pygame.draw.rect(
                     screen,
