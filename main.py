@@ -259,10 +259,11 @@ while True:
 
     fruit_timer += 1
 
-    if fruit_timer > random.randint(100,120) and len(fruits) < 5:
+    if fruit_timer > 120 and len(fruits) < 5:
         fx = random.randint(0, GRID_SIZE - 1)
         fy = random.randint(0, GRID_SIZE - 1)
         fruits.append((fx, fy))
+
         fruit_timer = 0
 
     predator_count = sum(1 for c in creatures if c.get("is_predator"))
@@ -294,29 +295,49 @@ while True:
 
             color = grid[x][y]
 
+            pygame.draw.rect(
+                screen,
+                color,
+                (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE)
+            )
+
             if (x, y) in fruits:
+               
                 color = (255, 0, 255)
 
-            pygame.draw.rect(
+                pygame.draw.rect(
                     screen,
                     color,
                     (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE)
-            )
+                )
 
-            if (x,y) in fruits:
                 pygame.draw.rect(
                     screen,
-                    (255,255,255),
-                    (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE),
-                    1
+                    (255, 150, 255),
+                    (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE//2, PIXEL_SIZE//2)
                 )
+
+                pygame.draw.rect(
+                    screen,
+                    (0, 200, 0),
+                    (x*PIXEL_SIZE + PIXEL_SIZE//3, y*PIXEL_SIZE - PIXEL_SIZE//4, PIXEL_SIZE//3, PIXEL_SIZE//3)
+                )
+
+                continue
+
+            pygame.draw.rect(
+                screen,
+                (255,255,255),
+                (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE),
+                1
+            )
 
 
             pygame.draw.rect(
-                    screen,
-                    (50,50,50),
-                    (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE),
-                    1
+                screen,
+                (50,50,50),
+                (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE),
+                1
             )
 
     draw_menu(
